@@ -103,13 +103,19 @@ def run_crew(inputs: dict):
     try:
         # Debug: Print received data
         print(f"Received inputs: {inputs}")
-        print(f"Using storage directory: {STORAGE_DIR}")
-        print(f"Resources path: {RESOURCES_PATH}")
+        print(f"Input type: {type(inputs)}")
+        print(f"Input keys: {list(inputs.keys()) if inputs else 'No keys'}")
         
-        if not inputs:
-            return {
-                "status": "error",
-                "message": "No inputs provided"
+        # Handle empty inputs
+        if not inputs or inputs == {}:
+            print("No inputs received, using defaults")
+            inputs = {
+                "domain_name": "General",
+                "topic": "Default Topic",
+                "learning_level": "beginner",
+                "preferred_language": "English",
+                "estimated_time": "1 month",
+                "current_date": datetime.now().strftime("%Y-%m-%d")
             }
         
         # Add current date if not provided
@@ -119,11 +125,14 @@ def run_crew(inputs: dict):
         # Validate inputs with detailed error handling
         try:
             content_inputs = Content(**inputs)
+            print(f"Validation successful: {content_inputs}")
         except Exception as validation_error:
+            print(f"Validation error: {str(validation_error)}")
             return {
                 "status": "error",
-                "message": f"Validation error: {str(validation_error)}",
-                "received_data": inputs
+                "message": f"Input validation failed: {str(validation_error)}",
+                "received_data": inputs,
+                "validation_error": str(validation_error)
             }
         
         # Create topic-specific filename

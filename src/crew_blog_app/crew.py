@@ -6,7 +6,8 @@ from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import SerperDevTool, ScrapeWebsiteTool, DirectoryReadTool, FileReadTool, FileWriterTool, YoutubeChannelSearchTool
 from pydantic import BaseModel, Field,ConfigDict
 from dotenv import load_dotenv
-
+from typing import Optional
+from datetime import datetime
 _ = load_dotenv()  # Load environment variables from .env file
 
 llm = LLM(
@@ -30,19 +31,29 @@ def setup_production_storage():
     
     return resources_path
 
+# class Content(BaseModel):
+#     model_config = ConfigDict(
+#         # Add any configuration you need
+#         validate_assignment=True
+#     )
+#     domain_name: str = Field(..., description="donain name of the course content")
+#     topic: str = Field(..., description="specified topic in the domain")
+#     learning_level: str = Field(..., description="learning level (beginner, intermediate, advanced)")
+#     preferred_language: str = Field(..., description="preferred language for the content (English, Spanish, etc.)")
+#     estimated_time: str = Field(..., description="estimated time duration of the course (e.g., 4 weeks, 3 months)")
+#     current_date: str = Field(..., description="the current date")
+
 class Content(BaseModel):
     model_config = ConfigDict(
-        # Add any configuration you need
         validate_assignment=True
     )
-    domain_name: str = Field(..., description="donain name of the course content")
-    topic: str = Field(..., description="specified topic in the domain")
-    learning_level: str = Field(..., description="learning level (beginner, intermediate, advanced)")
-    preferred_language: str = Field(..., description="preferred language for the content (English, Spanish, etc.)")
-    estimated_time: str = Field(..., description="estimated time duration of the course (e.g., 4 weeks, 3 months)")
-    current_date: str = Field(..., description="the current date")
-
-
+    domain_name: str = Field(default="General", description="domain name of the course content")
+    topic: str = Field(default="Default Topic", description="specified topic in the domain")
+    learning_level: Optional[str] = Field(default="beginner", description="learning level (beginner, intermediate, advanced)")
+    preferred_language: Optional[str] = Field(default="English", description="preferred language for the content")
+    estimated_time: Optional[str] = Field(default="1 month", description="estimated time duration of the course")
+    current_date: str = Field(default_factory=lambda: datetime.now().strftime("%Y-%m-%d"), description="the current date")
+    
 @CrewBase
 class TheConsultantCrew():
     """A crew to create day wise content for a programming course."""
