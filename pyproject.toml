@@ -25,3 +25,10 @@ build-backend = "hatchling.build"
 
 [tool.crewai]
 type = "crew"
+
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/crew_blog_app"]
+
+[tool.hatch.build]
+include = ["src/crew_blog_app/**/*"]
