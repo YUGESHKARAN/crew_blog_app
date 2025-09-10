@@ -48,6 +48,9 @@ class TheConsultantCrew():
     """A crew to create day wise content for a programming course."""
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
+    
+    agents: List[Agent] = []
+    tasks: List[Task] = []
 
     def __init__(self):
         super().__init__()
