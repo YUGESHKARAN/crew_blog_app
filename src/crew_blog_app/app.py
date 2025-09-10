@@ -14,7 +14,7 @@ CORS(app)
 def setup_production_storage():
     """Configure storage for production deployment"""
     if os.environ.get("ENVIRONMENT") == "production":
-        storage_dir = os.environ.get("CREWAI_STORAGE_DIR", "/app/storage")
+        storage_dir = os.environ.get("CREWAI_STORAGE_DIR", "/tmp/storage")
     else:
         storage_dir = os.environ.get("CREWAI_STORAGE_DIR", "./storage")
     
