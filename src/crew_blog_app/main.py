@@ -1,7 +1,35 @@
+# import os   
+# import re
 # from datetime import datetime
 # from crew_blog_app.crew import CrewBase
 # # from crew import TheConsultantCrew, Content
 # from crew_blog_app.crew import TheConsultantCrew, Content
+
+
+# def setup_production_storage():
+#     """Configure storage for production deployment"""
+#     if os.environ.get("ENVIRONMENT") == "production":
+#         storage_dir = os.environ.get("CREWAI_STORAGE_DIR", "/app/storage")
+#     else:
+#         storage_dir = os.environ.get("CREWAI_STORAGE_DIR", "./storage")
+    
+#     os.environ["CREWAI_STORAGE_DIR"] = storage_dir
+    
+#     # Create resources directory structure
+#     resources_path = os.path.join(storage_dir, "resources", "draft")
+#     os.makedirs(resources_path, exist_ok=True)
+    
+#     return resources_path, storage_dir
+
+# def sanitize_filename(topic):
+#     """Convert topic to safe filename"""
+#     # Remove special characters and replace spaces with underscores
+#     safe_name = re.sub(r'[^\w\s-]', '', topic)
+#     safe_name = re.sub(r'[-\s]+', '_', safe_name)
+#     return safe_name.lower().strip('_')
+
+# # Initialize storage paths
+# RESOURCES_PATH, STORAGE_DIR = setup_production_storage()
 
 
 # def run_crew(inputs: dict):
@@ -33,13 +61,15 @@
 #     result = run_crew(test_inputs)
 #     print("Crew execution completed:", result)
 
-from datetime import datetime
-import os
-import traceback
+import os   
 import re
+import traceback
+from datetime import datetime
+from crew_blog_app.crew import CrewBase
+# from crew import TheConsultantCrew, Content
 from crew_blog_app.crew import TheConsultantCrew, Content
 
-# Production storage configuration
+
 def setup_production_storage():
     """Configure storage for production deployment"""
     if os.environ.get("ENVIRONMENT") == "production":
@@ -57,36 +87,58 @@ def setup_production_storage():
 
 def sanitize_filename(topic):
     """Convert topic to safe filename"""
+    # Remove special characters and replace spaces with underscores
     safe_name = re.sub(r'[^\w\s-]', '', topic)
     safe_name = re.sub(r'[-\s]+', '_', safe_name)
     return safe_name.lower().strip('_')
 
+# Initialize storage paths
+RESOURCES_PATH, STORAGE_DIR = setup_production_storage()
+
+
 def run_crew(inputs: dict):
     """
-    Run the crew with dynamic inputs and file storage
+    Run the crew with dynamic inputs and enhanced file handling
     """
     try:
-        # Initialize storage paths
-        RESOURCES_PATH, STORAGE_DIR = setup_production_storage()
-        
+        # Debug: Print received data
+        print(f"Received inputs: {inputs}")
         print(f"Using storage directory: {STORAGE_DIR}")
         print(f"Resources path: {RESOURCES_PATH}")
         
-        # Validate inputs against your BaseModel
-        content_inputs = Content(**inputs)
+        if not inputs:
+            return {
+                "status": "error",
+                "message": "No inputs provided"
+            }
+        
+        # Add current date if not provided
+        if 'current_date' not in inputs:
+            inputs['current_date'] = datetime.now().strftime("%Y-%m-%d")
+        
+        # Validate inputs with detailed error handling
+        try:
+            content_inputs = Content(**inputs)
+        except Exception as validation_error:
+            return {
+                "status": "error",
+                "message": f"Validation error: {str(validation_error)}",
+                "received_data": inputs
+            }
         
         # Create topic-specific filename
         topic = inputs.get('topic', 'default_topic')
         safe_topic = sanitize_filename(topic)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         
+        # Update the expected output in your task config to use topic-specific filename
         research_filename = f"{safe_topic}_{timestamp}"
         calendar_filename = f"content_calendar_{safe_topic}_{timestamp}.md"
         
         # Create crew instance
         crew_instance = TheConsultantCrew()
         
-        # Enhanced inputs with file information
+        # You can pass the filenames as additional inputs
         enhanced_inputs = content_inputs.dict()
         enhanced_inputs.update({
             'research_filename': research_filename,
@@ -98,7 +150,7 @@ def run_crew(inputs: dict):
         # Execute crew with validated inputs
         result = crew_instance.consultantcrew().kickoff(inputs=enhanced_inputs)
         
-        # Check for created files and read content
+        # Read the topic-specific content_calendar file
         calendar_file_path = os.path.join(RESOURCES_PATH, calendar_filename)
         research_file_path = os.path.join(RESOURCES_PATH, f"research_consultant_{safe_topic}_{timestamp}.md")
         
@@ -142,13 +194,18 @@ def run_crew(inputs: dict):
         return response_data
         
     except Exception as e:
+        # Print full traceback for debugging
         print(f"Error: {str(e)}")
         print(traceback.format_exc())
         
         return {
             "status": "error", 
             "message": str(e),
-            "traceback": traceback.format_exc()
+            "traceback": traceback.format_exc(),
+            "storage_info": {
+                "storage_dir": STORAGE_DIR,
+                "resources_path": RESOURCES_PATH
+            }
         }
 
 if __name__ == "__main__":
@@ -165,3 +222,6 @@ if __name__ == "__main__":
     result = run_crew(test_inputs)
     print("Crew execution completed:")
     print(result)
+
+
+
