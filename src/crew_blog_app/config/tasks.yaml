@@ -123,10 +123,10 @@ research_consultant:
     
     Current date: {current_date}
     
-    IMPORTANT: You MUST save your research findings to the file 'resources/draft/research_consultant_{research_filename}.md' using the FileWriterTool before completing this task.
+    IMPORTANT: You MUST save your research findings to the file '{resources_path}/research_consultant_{research_filename}.md' using the FileWriterTool before completing this task.
 
   expected_output: >
-    A comprehensive research report saved as a markdown file at 'resources/draft/research_consultant_{research_filename}.md'.
+    A comprehensive research report saved as a markdown file at '{resources_path}/research_consultant_{research_filename}.md'.
     The file must contain:
     - Resource Type (Course, Article, Video, etc.)
     - Title
@@ -143,9 +143,9 @@ path_planner:
   description: >
     Develop a detailed learning path with structured day-to-day tasks to master the specified topic from scratch to an advanced level.
     
-    FIRST: Read the research consultant report from 'resources/draft/research_consultant_{research_filename}.md' using FileReadTool.
+    FIRST: Read the research consultant report from '{resources_path}/research_consultant_{research_filename}.md' using FileReadTool.
     THEN: Create your structured learning path based on that research.
-    FINALLY: Save your path to 'resources/draft/path_planner_{research_filename}.md' using FileWriterTool.
+    FINALLY: Save your path to '{resources_path}/path_planner_{research_filename}.md' using FileWriterTool.
     
     <Topic>{topic}</Topic>
     <Learning Level>{learning_level}</Learning Level>
@@ -155,7 +155,7 @@ path_planner:
     Current date: {current_date}
 
   expected_output: >
-    A structured learning path saved as 'resources/draft/path_planner_{research_filename}.md' containing:
+    A structured learning path saved as '{resources_path}/path_planner_{research_filename}.md' containing:
     - Day/Week Number
     - Topic/Subtopic
     - Resource details from research
@@ -167,15 +167,15 @@ content_reviewer:
   description: >
     Create appropriate video links and GitHub repos for each day/week task in the learning path.
     
-    FIRST: Read the path planner from 'resources/draft/path_planner_{research_filename}.md' using FileReadTool.
+    FIRST: Read the path planner from '{resources_path}/path_planner_{research_filename}.md' using FileReadTool.
     THEN: Find relevant videos and GitHub repositories for each learning task.
-    FINALLY: Save your findings to 'resources/draft/content_reviewer_{research_filename}.md' using FileWriterTool.
+    FINALLY: Save your findings to '{resources_path}/content_reviewer_{research_filename}.md' using FileWriterTool.
     
     <Topic>{topic}</Topic>
     Current date: {current_date}
 
   expected_output: >
-    A content review file saved as 'resources/draft/content_reviewer_{research_filename}.md' with video links and GitHub repos for each learning task.
+    A content review file saved as '{resources_path}/content_reviewer_{research_filename}.md' with video links and GitHub repos for each learning task.
     
     Confirm the file has been created successfully.
 
@@ -191,12 +191,13 @@ create_content_calendar:
     Current date: {current_date}
     
     FIRST: Read all previous files:
-    - 'resources/draft/research_consultant_{research_filename}.md'
-    - 'resources/draft/path_planner_{research_filename}.md'
-    - 'resources/draft/content_reviewer_{research_filename}.md'
+    - '{resources_path}/research_consultant_{research_filename}.md'
+    - '{resources_path}/path_planner_{research_filename}.md'
+    - '{resources_path}/content_reviewer_{research_filename}.md'
 
     THEN: Create a unified content calendar.
-    FINALLY: Save to 'resources/draft/content_calendar_{research_filename}.md' using FileWriterTool.
+
+    FINALLY: Save to '{resources_path}/content_calendar_{research_filename}.md' using FileWriterTool.
   expected_output: >
     Provide a structured content calendar to schedule and organize the learning journey for mastering the specified topic from scratch to an advanced level.
     The content calendar should include the following details for each scheduled task:  
@@ -209,4 +210,5 @@ create_content_calendar:
     - reference github repo link
     - reference video link
     - Estimated Time to Complete (if applicable)
-
+    Confirm the file has been created successfully.
+  

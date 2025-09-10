@@ -84,6 +84,7 @@ def kickoff_crew():
         enhanced_inputs.update({
             'research_filename': research_filename,
             'calendar_filename': calendar_filename,
+            'resources_path': RESOURCES_PATH,
             'safe_topic': safe_topic
         })
         
@@ -95,7 +96,7 @@ def kickoff_crew():
         
         response_data = {
             "status": "success",
-            "summary": str(result),
+            # "summary": str(result),
             "files_created": [],
             "storage_info": {
                 "storage_dir": STORAGE_DIR,
@@ -166,7 +167,8 @@ def get_calendar_only():
         topic = data.get('topic', 'default_topic')
         safe_topic = sanitize_filename(topic)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        calendar_filename = f"content_calendar_{safe_topic}_{timestamp}.md"
+        # calendar_filename = f"content_calendar_{safe_topic}_{timestamp}.md"
+        calendar_filename = f"content_calendar_mern_stack_20250909_193104.md"
         
         content_inputs = Content(**data)
         enhanced_inputs = content_inputs.dict()
