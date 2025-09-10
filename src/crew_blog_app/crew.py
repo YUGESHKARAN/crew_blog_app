@@ -43,17 +43,48 @@ def setup_production_storage():
 #     estimated_time: str = Field(..., description="estimated time duration of the course (e.g., 4 weeks, 3 months)")
 #     current_date: str = Field(..., description="the current date")
 
+# class Content(BaseModel):
+#     model_config = ConfigDict(
+#         validate_assignment=True
+#     )
+#     domain_name: str = Field(default="General", description="domain name of the course content")
+#     topic: str = Field(default="Default Topic", description="specified topic in the domain")
+#     learning_level: Optional[str] = Field(default="beginner", description="learning level (beginner, intermediate, advanced)")
+#     preferred_language: Optional[str] = Field(default="English", description="preferred language for the content")
+#     estimated_time: Optional[str] = Field(default="1 month", description="estimated time duration of the course")
+#     current_date: str = Field(default_factory=lambda: datetime.now().strftime("%Y-%m-%d"), description="the current date")
+
+
 class Content(BaseModel):
+    """Input schema for the crew"""
     model_config = ConfigDict(
         validate_assignment=True
     )
-    domain_name: str = Field(default="General", description="domain name of the course content")
-    topic: str = Field(default="Default Topic", description="specified topic in the domain")
-    learning_level: Optional[str] = Field(default="beginner", description="learning level (beginner, intermediate, advanced)")
-    preferred_language: Optional[str] = Field(default="English", description="preferred language for the content")
-    estimated_time: Optional[str] = Field(default="1 month", description="estimated time duration of the course")
-    current_date: str = Field(default_factory=lambda: datetime.now().strftime("%Y-%m-%d"), description="the current date")
-    
+    domain_name: str = Field(
+        default="General",
+        description="Domain name of the course content"
+    )
+    topic: str = Field(
+        default="Default Topic", 
+        description="Specified topic in the domain"
+    )
+    learning_level: str = Field(
+        default="beginner",
+        description="Learning level (beginner, intermediate, advanced)"
+    )
+    preferred_language: str = Field(
+        default="English",
+        description="Preferred language for the content (English, Spanish, etc.)"
+    )
+    estimated_time: str = Field(
+        default="1 month",
+        description="Estimated time duration of the course (e.g., 4 weeks, 3 months)"
+    )
+    current_date: str = Field(
+        default_factory=lambda: datetime.now().strftime("%Y-%m-%d"),
+        description="The current date"
+    )
+
 @CrewBase
 class TheConsultantCrew():
     """A crew to create day wise content for a programming course."""
@@ -67,6 +98,10 @@ class TheConsultantCrew():
         super().__init__()
         self.resources_path = setup_production_storage()
         print(f"Crew initialized with resources path: {self.resources_path}")
+
+    def inputs(self) -> type[BaseModel]:
+        """Return the input schema for the crew"""
+        return Content
 
     @agent
     def research_development(self)-> Agent:
