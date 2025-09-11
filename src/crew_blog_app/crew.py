@@ -15,7 +15,7 @@ llm = LLM(
 model="gemini/gemini-2.5-flash-lite",
 
 temperature=0.5,
-api_key=os.getenv("Google_API_KEY")
+api_key=os.getenv("GOOGLE_API_KEY")
 )
 
 # Production configuration
