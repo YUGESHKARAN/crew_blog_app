@@ -84,6 +84,22 @@ class Content(BaseModel):
         default_factory=lambda: datetime.now().strftime("%Y-%m-%d"),
         description="The current date"
     )
+    resources_path: str = Field(
+        default="./storage/resources/draft",
+        description="Path to the resources directory for file storage"
+    )
+    research_filename: Optional[str] = Field(
+        default=None,
+        description="Filename for the research report output"
+    )
+    calendar_filename: Optional[str] = Field(
+        default=None,
+        description="Filename for the content calendar output"
+    )
+    safe_topic: Optional[str] = Field(
+        default=None,
+        description="Sanitized topic name for file naming"
+    )
 
 @CrewBase
 class TheConsultantCrew():
