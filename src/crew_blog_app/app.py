@@ -88,7 +88,7 @@ def kickoff_crew():
             'safe_topic': safe_topic
         })
         
-        result = crew_instance.consultantcrew().kickoff(inputs=enhanced_inputs)
+        result = crew_instance.crew().kickoff(inputs=enhanced_inputs)
         
         # Read the topic-specific content_calendar file
         calendar_file_path = os.path.join(RESOURCES_PATH, calendar_filename)

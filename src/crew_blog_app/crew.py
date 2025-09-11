@@ -229,7 +229,7 @@ class TheConsultantCrew():
         )
 
     @crew
-    def consultantcrew(self) -> Crew:
+    def crew(self) -> Crew:
         """A crew designed to create day-wise learning content, covering a specified technology from scratch to advanced level."""
         return Crew(
             agents=self.agents,
