@@ -178,7 +178,7 @@ def get_calendar_only():
         })
         
         crew_instance = TheConsultantCrew()
-        crew_instance.consultantcrew().kickoff(inputs=enhanced_inputs)
+        crew_instance.crew().kickoff(inputs=enhanced_inputs)
         
         # Return only the calendar content from topic-specific file
         calendar_file_path = os.path.join(RESOURCES_PATH, calendar_filename)
