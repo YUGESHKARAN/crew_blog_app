@@ -107,18 +107,15 @@ class TheConsultantCrew():
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
     
-    agents: List[Agent] = []
-    tasks: List[Task] = []
-
     def __init__(self):
-        super().__init__()
+        # Remove super().__init__() for CrewBase
         self.resources_path = setup_production_storage()
         print(f"Crew initialized with resources path: {self.resources_path}")
 
     def inputs(self) -> type[BaseModel]:
         """Return the input schema for the crew"""
         return Content
-
+    
     @agent
     def research_development(self)-> Agent:
          return Agent(
@@ -131,11 +128,15 @@ class TheConsultantCrew():
                 FileWriterTool(),
                 FileReadTool()
             ],
-            reasoning=True,
+            reasoning=False,
             inject_date=True,
             llm=llm,
-            allow_delegation=True,
-            max_rpm=1
+            allow_delegation=False, # Reduced to prevent memory overhead
+            max_rpm=3,
+            cache=True,  # Enable caching
+            respect_context_window=True,
+            max_iter=10, # Limit iterations (default: 25)
+            max_execution_time=1800 # 30 minutes timeout
         )
     
     @agent
@@ -172,11 +173,15 @@ class TheConsultantCrew():
                 FileWriterTool(),
                 FileReadTool()
             ],
-            reasoning=True,
+            reasoning=False,
             inject_date=True,
             llm=llm,
-            allow_delegation=True,
-            max_rpm=1
+            allow_delegation=False,
+            max_rpm=3,
+            cache=True,
+            respect_context_window=True,
+            max_iter=15,
+            max_execution_time=1800
         )
   
     @agent
@@ -191,11 +196,15 @@ class TheConsultantCrew():
                 FileWriterTool(),
                 FileReadTool()
             ],
-            reasoning=True,
+            reasoning=False,
             inject_date=True,
             llm=llm,
-            allow_delegation=True,
-            max_rpm=1
+            allow_delegation=False,
+            max_rpm=3,
+            cache=True,
+            respect_context_window=True,
+            max_iter=10,  # Lower for simpler scheduling tasks
+            max_execution_time=1200  # 20 minutes
         )
     
     @task
@@ -203,6 +212,8 @@ class TheConsultantCrew():
         return Task(
             config=self.tasks_config['research_consultant'],
             agent=self.research_development(),
+            max_iter=10,  # Limit task iterations
+            max_execution_time=1800
         )
     
     @task
@@ -210,7 +221,9 @@ class TheConsultantCrew():
         return Task(
             config=self.tasks_config['path_planner'],
             agent=self.research_development(),
-            context=[self.research_consultant()]  # Wait for research to complete
+            context=[self.research_consultant()],  # Wait for research to complete
+            max_iter=8,
+            max_execution_time=1200
         )
     
     @task
@@ -218,14 +231,18 @@ class TheConsultantCrew():
         return Task(
             config=self.tasks_config['content_reviewer'],
             agent=self.content_creator(),
-            context=[self.path_planner()]  # Wait for path planner to complete
+            context=[self.path_planner()],  # Wait for path planner to complete
+            max_iter=12,
+            max_execution_time=1500
         )
     @task
     def create_content_calendar(self)-> Task:
         return Task(
             config=self.tasks_config['create_content_calendar'],
             agent=self.tasks_scheduler(),
-            context=[self.research_consultant(), self.path_planner(), self.content_reviewer()]  # Wait for all previous tasks
+            context=[self.research_consultant(), self.path_planner(), self.content_reviewer()],  # Wait for all previous tasks
+            max_iter=8,
+            max_execution_time=1200
         )
 
     @crew
@@ -239,5 +256,8 @@ class TheConsultantCrew():
             planning=False,
             reasoning=False,
             llm=llm,
-            max_rpm=1
+            max_rpm=3,
+            cache=True,  # Enable crew-level caching
+            respect_context_window=True,
+            max_execution_time=7200  # 2 hours total timeout
         )
