@@ -131,7 +131,7 @@ class TheConsultantCrew():
             reasoning=False,
             inject_date=True,
             llm=llm,
-            allow_delegation=False, # Reduced to prevent memory overhead
+            allow_delegation=True, # Reduced to prevent memory overhead
             max_rpm=3,
             cache=True,  # Enable caching
             respect_context_window=True,
@@ -173,15 +173,16 @@ class TheConsultantCrew():
                 FileWriterTool(),
                 FileReadTool()
             ],
-            reasoning=False,
+            reasoning=True,
             inject_date=True,
             llm=llm,
-            allow_delegation=False,
+            allow_delegation=True,
             max_rpm=3,
             cache=True,
             respect_context_window=True,
-            max_iter=15,
+            max_iter=20,
             max_execution_time=1800
+
         )
   
     @agent
@@ -199,11 +200,11 @@ class TheConsultantCrew():
             reasoning=False,
             inject_date=True,
             llm=llm,
-            allow_delegation=False,
+            allow_delegation=True,
             max_rpm=3,
             cache=True,
             respect_context_window=True,
-            max_iter=10,  # Lower for simpler scheduling tasks
+            max_iter=15,  # Lower for simpler scheduling tasks
             max_execution_time=1200  # 20 minutes
         )
     
@@ -241,7 +242,7 @@ class TheConsultantCrew():
             config=self.tasks_config['create_content_calendar'],
             agent=self.tasks_scheduler(),
             context=[self.research_consultant(), self.path_planner(), self.content_reviewer()],  # Wait for all previous tasks
-            max_iter=8,
+            max_iter=12,
             max_execution_time=1200
         )
 
