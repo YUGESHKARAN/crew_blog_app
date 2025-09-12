@@ -252,7 +252,7 @@ class TheConsultantCrew():
             agents=self.agents,
             tasks=self.tasks,
             process=Process.sequential,
-            verbose=True,
+            verbose=False,
             planning=False,
             reasoning=False,
             llm=llm,
