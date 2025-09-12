@@ -198,7 +198,7 @@ create_content_calendar:
    
   expected_output: >
     Provide a structured content calendar to schedule and organize the learning journey for mastering the specified topic from scratch to an advanced level.
-    The content calendar should include the following details for each scheduled task in the organized table format:  
+    The content calendar should include the following details for each scheduled task in the organized table format with the columns mentioned below for each day/week separately followed by the respective tasks to do for that day/week:  
     - Day /week
     - Topic/Subtopic
     - Resource Type (crash Course, current trend blogs, Article, Video, etc.)

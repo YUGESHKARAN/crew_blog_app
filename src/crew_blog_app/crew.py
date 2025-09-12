@@ -144,8 +144,8 @@ class TheConsultantCrew():
         return Agent(
             config=self.agents_config['content_creator'],
             tools=[
-                # SerperDevTool(),
-                # ScrapeWebsiteTool(),
+                SerperDevTool(),
+                ScrapeWebsiteTool(),
                 # GithubSearchTool(),
                 YoutubeChannelSearchTool(
                      config=dict(

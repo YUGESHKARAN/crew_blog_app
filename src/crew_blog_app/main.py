@@ -69,8 +69,8 @@ def run():
     try:
         # Default inputs for CLI execution (matching your Flask app structure)
         data = {
-            "domain_name": "Data Science",
-            "topic": "Machine Learning", 
+            "domain_name": "Blockchain",
+            "topic": "Smart Contracts & dApps", 
             "learning_level": "beginner to advanced",
             "preferred_language": "English",
             "estimated_time": "2 months",
